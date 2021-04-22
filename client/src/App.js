@@ -12,7 +12,7 @@ function App() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const [err, data] = await API.get('user/validate', { token: userToken });
+      const [err, data] = await API.get('users/validate', { token: userToken });
       if (err) {
         setUser(null);
       } else {
@@ -24,7 +24,7 @@ function App() {
 
   return (
     <div className="App">
-      <Router />
+      <Router user={user} setUser={setUser} />
     </div>
   );
 }
