@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = {
-  to: (promise) => promise.then(result => [null, result]).catch(error => [error, null]),
+  to: (promise) => promise.then((result) => [null, result]).catch((error) => [error, null]),
   successResponse: (res, data) => res.status(200).jsonp(data),
   unSuccessResponse: (res, error) => res.status(400).jsonp({ error: error.message || error, code: 400 }),
 
@@ -24,5 +24,5 @@ module.exports = {
       req.isLoggedIn = false;
       return next();
     }
-  }
+  },
 };

@@ -23,7 +23,8 @@ class SocketClient {
     // Connection opened
     this.socket.addEventListener('open', (event) => {
       console.log('Connected to WS Server');
-      this.emitMessage('set_user', user);
+      const {isAdmin, username, _id} = user;
+      this.emitMessage('set_user', {isAdmin, username, _id});
       cb();
     });
 

@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-import API from "./common/api";
-import Router from "./Router";
+import API from './common/api';
+import Router from './Router';
 
 function App() {
   const [loading, setLoading] = useState(false);

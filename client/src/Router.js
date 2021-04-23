@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import Login from './components/login';
 import SignUp from './components/signup';
-import UserPage from "./components/user-page";
-import AdminPage from "./components/admin-page";
+import UserPage from './components/user-page';
+import AdminPage from './components/admin-page';
 
-const Router = ({user, setUser}) => {
+const Router = ({ user, setUser }) => {
   return (
     <BrowserRouter>
       <Switch>
@@ -13,13 +13,13 @@ const Router = ({user, setUser}) => {
           <Login user={user} setUser={setUser} />
         </Route>
         <Route path="/signup">
-          <SignUp user={user} setUser={setUser}  />
+          <SignUp user={user} setUser={setUser} />
         </Route>
         <Route path="/admin">
-          <AdminPage user={user} setUser={setUser}  />
+          <AdminPage user={user} setUser={setUser} />
         </Route>
         <Route path="/user-dashboard">
-          <UserPage user={user} setUser={setUser}  />
+          <UserPage user={user} setUser={setUser} />
         </Route>
         <Route path="/">
           <Redirect to="/home" />

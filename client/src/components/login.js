@@ -1,8 +1,8 @@
 import React from 'react';
-import {Row, Col, Form, Input, Button, message} from "antd";
-import {Link, useHistory} from "react-router-dom";
-import PublicLayout from "./public-layout";
-import API from "../common/api";
+import { Button, Col, Form, Input, message, Row } from 'antd';
+import { Link, useHistory } from 'react-router-dom';
+import PublicLayout from './public-layout';
+import API from '../common/api';
 
 const layout = {
   labelCol: { span: 8 },
@@ -25,10 +25,9 @@ const onFinish = async (values, history, setUser) => {
   } else {
     history.push('/user-dashboard');
   }
-}
+};
 
-const Login = ({setUser}) => {
-
+const Login = ({ setUser }) => {
   const history = useHistory();
 
   return (
@@ -59,15 +58,13 @@ const Login = ({setUser}) => {
         <Form.Item {...tailLayout}>
           <Row>
             <Col span={12}>
-              <Button type="primary" htmlType="submit" block >
+              <Button type="primary" htmlType="submit" block>
                 Login
               </Button>
             </Col>
             <Col span={12}>
               <Link to="/signup">
-                <Button block >
-                  Register
-                </Button>
+                <Button block>Register</Button>
               </Link>
             </Col>
           </Row>

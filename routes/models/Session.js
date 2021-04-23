@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const SessionSchema = new mongoose.Schema({
   id: { type: String, unique: true },
-  createdAt: {type: Number},
-  messages: {type: Array},
+  createdAt: { type: Number },
+  messages: { type: Array },
   points: {},
 });
 

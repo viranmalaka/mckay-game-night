@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { get, to } from './utils';
+
 const API_ROOT = '/api/'; // root of the api url
 
 const responseBody = (returnResponsesOnly) => (res) => (returnResponsesOnly ? res.data : res); // an arrow function to takes only the data value from the response object
