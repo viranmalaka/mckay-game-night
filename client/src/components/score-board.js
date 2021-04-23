@@ -67,7 +67,6 @@ const ScoreBoard = ({ onlineUsers, session, setSession, allUsers, onScoreUpdate 
             username={ud.username}
             totalPoint={get(session, ['points', ud._id])}
             setTotalPoint={(value, userId) => {
-              console.log({ ...session.points, [userId]: value });
               setSession({ ...session, points: { ...session.points, [userId]: value } });
             }}
           />

@@ -48,19 +48,17 @@ module.exports = (wss) => {
             });
             // save in the db
             const { sessionId, ...rest } = payload;
-            console.log({ sessionId, rest });
-            Session.findOneAndUpdate({ id: sessionId }, { $push: { messages: rest } }, { new: true }).then(console.log);
+            Session.findOneAndUpdate({ id: sessionId }, { $push: { messages: rest } }, { new: true }).then(() => {});
             break;
 
           case 'update_points':
-            console.log('upd pt', payload);
             const { sessionId: sid, points } = payload;
 
             Object.values(clients).forEach(({ socket }) => {
               socket.send(JSON.stringify({ type: 'changed_points', payload: points }));
             });
             // save in the db
-            Session.findOneAndUpdate({ id: sid }, { points }, { new: true }).then(console.log);
+            Session.findOneAndUpdate({ id: sid }, { points }, { new: true }).then(() => {});
             break;
         }
       } catch (e) {
