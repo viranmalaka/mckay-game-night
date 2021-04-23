@@ -20,14 +20,20 @@ const SelectSession = ({ setSession }) => {
 
   return (
     <>
-      <Modal title="Create A New Game" visible={modal} onOk={() => showModal(false)} onCancel={() => showModal(false)}>
+      <Modal
+        title="Create A New Game"
+        visible={modal}
+        onOk={() => showModal(true)}
+        onCancel={() => showModal(true)}
+        maskClosable={false}
+      >
         <Table
           dataSource={sessions}
           columns={[
             {
               title: 'Started At',
               dataIndex: 'createdAt',
-              render: (value) => moment(value).format('YYYY-MM-DD  HH:mm A'),
+              render: (value) => moment(value).format('YYYY-MM-DD  HH:mm'),
             },
             {
               title: 'ID',

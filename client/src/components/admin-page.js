@@ -68,7 +68,7 @@ const AdminPage = ({ user }) => {
         setOnlineUsers(data);
       });
     }
-  }, []);
+  }, [user, session]);
 
   useEffect(() => {
     (async () => {
@@ -98,8 +98,8 @@ const AdminPage = ({ user }) => {
                     <div style={{ minHeight: 500, maxHeight: '70vh', overflow: 'auto' }}>
                       {session.messages.map(({ username, isAdmin, message, time }) => (
                         <div key={time}>
-                          <Tag color="default">{isAdmin ? 'Admin' : username}</Tag>: (
-                          {moment(time).format('HH:mm:ss A')}) {message}
+                          <Tag color="default">{isAdmin ? 'Admin' : username}</Tag>: ({moment(time).format('HH:mm:ss')}){' '}
+                          {message}
                         </div>
                       ))}
                     </div>
@@ -124,7 +124,15 @@ const AdminPage = ({ user }) => {
                     </Row>
                   </Col>
                   <Col span={6} offset={1}>
-                    <ScoreBoard onlineUsers={onlineUsers} session={session} setSession={setSession} />
+                    <ScoreBoard
+                      onlineUsers={onlineUsers}
+                      session={session}
+                      setSession={setSession}
+                      allUsers={allUsers}
+                      onScoreUpdate={() => {
+                        ws.updatePoints(session.id, session.points);
+                      }}
+                    />
                   </Col>
                 </Row>
               </Col>

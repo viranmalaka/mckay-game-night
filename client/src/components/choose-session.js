@@ -12,6 +12,7 @@ const ChooseSession = ({ setSession }) => {
       <Modal
         title="Enter a Session Code"
         visible={modal}
+        maskClosable={false}
         onOk={async () => {
           const [err, data] = await API.get('session/' + sessionId, { token });
           if (err) {

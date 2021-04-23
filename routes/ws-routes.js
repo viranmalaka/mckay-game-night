@@ -18,7 +18,7 @@ module.exports = (wss) => {
     console.log('connected');
     ws.on('close', () => {
       console.log('close');
-      delete clients[ws.id];
+      delete clients[ws.user_id];
       notifyAdminOnClientChange();
     });
 
@@ -36,7 +36,6 @@ module.exports = (wss) => {
             payload.time = Date.now();
             const isAdminMessage = clients[ws.user_id].user && clients[ws.user_id].user.isAdmin;
             Object.values(clients).forEach(({ socket, user }) => {
-              console.log('sending to', user._id);
               if (isAdminMessage) {
                 // send all
                 socket.send(JSON.stringify({ type: 'user_message', payload }));
@@ -51,6 +50,17 @@ module.exports = (wss) => {
             const { sessionId, ...rest } = payload;
             console.log({ sessionId, rest });
             Session.findOneAndUpdate({ id: sessionId }, { $push: { messages: rest } }, { new: true }).then(console.log);
+            break;
+
+          case 'update_points':
+            console.log('upd pt', payload);
+            const { sessionId: sid, points } = payload;
+
+            Object.values(clients).forEach(({ socket }) => {
+              socket.send(JSON.stringify({ type: 'changed_points', payload: points }));
+            });
+            // save in the db
+            Session.findOneAndUpdate({ id: sid }, { points }, { new: true }).then(console.log);
             break;
         }
       } catch (e) {

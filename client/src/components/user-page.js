@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Col, Input, Row, Spin, Tag } from 'antd';
 import SocketClient from '../common/socket-client';
 import ChooseSession from './choose-session';
+import moment from 'moment';
+import { get } from '../common/utils';
 
 let ws = null;
 
@@ -19,8 +21,18 @@ const UserPage = ({ user }) => {
       ws.addHook('user_message', (data) => {
         setSession({ ...session, messages: [...session.messages, data] });
       });
+      ws.addHook('changed_points', (data) => {
+        setSession({ ...session, points: data });
+        setTotalpoints(data[user._id]);
+      });
     }
-  });
+  }, [user, session]);
+
+  useEffect(() => {
+    if (session) {
+      setTotalpoints(get(session, ['points', user._id]));
+    }
+  }, [session]);
 
   if (!user) {
     return <Spin />;
@@ -54,9 +66,10 @@ const UserPage = ({ user }) => {
           <div style={{ minHeight: 200, maxHeight: '70vh', overflow: 'auto' }}>
             {session.messages
               .filter(({ username, isAdmin }) => isAdmin || username === user.username)
-              .map(({ username, isAdmin, message }) => (
-                <div>
-                  <Tag color="default">{isAdmin ? 'Admin' : username}</Tag>: {message}
+              .map(({ username, isAdmin, message, time }) => (
+                <div key={time}>
+                  <Tag color="default">{isAdmin ? 'Admin' : username}</Tag>: ({moment(time).format('HH:mm:ss')}){' '}
+                  {message}
                 </div>
               ))}
           </div>

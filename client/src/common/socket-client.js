@@ -23,8 +23,8 @@ class SocketClient {
     // Connection opened
     this.socket.addEventListener('open', (event) => {
       console.log('Connected to WS Server');
-      const {isAdmin, username, _id} = user;
-      this.emitMessage('set_user', {isAdmin, username, _id});
+      const { isAdmin, username, _id } = user;
+      this.emitMessage('set_user', { isAdmin, username, _id });
       cb();
     });
 
@@ -36,7 +36,7 @@ class SocketClient {
           this.hooks[json.type](json.payload);
         }
       } catch (e) {
-        console.log('invalid data');
+        console.log('invalid data', e, event.data);
       }
     });
 
@@ -61,6 +61,10 @@ class SocketClient {
 
   sendMessage(user, sessionId, message) {
     this.emitMessage('user_message', { sessionId, username: user.username, isAdmin: user.isAdmin, message });
+  }
+
+  updatePoints(sessionId, points) {
+    this.emitMessage('update_points', { sessionId, points });
   }
 
   addHook(name, fn) {
