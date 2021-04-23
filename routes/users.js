@@ -66,4 +66,15 @@ router.get('/validate', authMiddleware, async (req, res, next) => {
   }
 });
 
+router.get('/all-users', authMiddleware, async (req, res, next) => {
+  if (!req.user || req.user.isAdmin !== true) {
+    return unSuccessResponse(res, {msg: 'Permission Denied'});
+  }
+  const [err, users] = await to(User.find());
+  if (err) {
+    return unSuccessResponse(res, {err, msg: 'Something went wrong'});
+  }
+  return successResponse(res, {users});
+});
+
 module.exports = router;
