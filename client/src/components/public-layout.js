@@ -9,7 +9,7 @@ const PublicLayout = ({ children }) => {
         {children}
       </Col>
       <Col span={12} offset={6}>
-        <img src="https://www.verywellmind.com/thmb/tLasK_y7eiz9cc5rt_Nv6n5ICtk=/700x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/family-parents-grandparents-Morsa-Images-Taxi-56a906ad3df78cf772a2ef29.jpg" />
+        <img src="/background.jpg" style={{ width: '100%' }} />
       </Col>
     </Row>
   );
