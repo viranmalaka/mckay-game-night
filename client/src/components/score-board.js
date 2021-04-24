@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Col, InputNumber, Row, Tag } from 'antd';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { get } from '../common/utils';
 
-const ScoreLine = ({ username, totalPoint, userId, setTotalPoint }) => {
+const ScoreLine = ({ username, totalPoint, userId, setTotalPoint, setNumber }) => {
   const [changeNumber, setChangeNumber] = useState(0);
+
+  useEffect(() => {
+    setChangeNumber(setNumber);
+  }, [setNumber]);
+
   return (
     <Row>
       <Col span={8} style={{ display: 'flex', alignItems: 'center', textAlign: 'right' }}>
@@ -37,6 +42,7 @@ const ScoreLine = ({ username, totalPoint, userId, setTotalPoint }) => {
 
 const ScoreBoard = ({ onlineUsers, session, setSession, allUsers, onScoreUpdate }) => {
   const [value, setValue] = useState(0);
+  const [flushValue, setFlushValue] = useState(0);
   const onlineUsersObject = onlineUsers.reduce((p, c) => {
     p[c.username] = c;
     return p;
@@ -49,11 +55,7 @@ const ScoreBoard = ({ onlineUsers, session, setSession, allUsers, onScoreUpdate 
         <Button
           size="small"
           onClick={() => {
-            const points = allUsers.reduce((p, c) => {
-              p[c._id] = value;
-              return p;
-            }, {});
-            setSession({ ...session, points });
+            setFlushValue(value);
           }}
         >
           SET
@@ -63,6 +65,7 @@ const ScoreBoard = ({ onlineUsers, session, setSession, allUsers, onScoreUpdate 
         .filter((ud) => !ud.isAdmin && !!onlineUsersObject[ud.username])
         .map((ud) => (
           <ScoreLine
+            setNumber={flushValue}
             userId={ud._id}
             username={ud.username}
             totalPoint={get(session, ['points', ud._id])}

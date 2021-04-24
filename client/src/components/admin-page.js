@@ -12,7 +12,7 @@ const { Header, Content, Footer } = Layout;
 
 let ws = null;
 
-const CreateNewGame = ({ session, setSession }) => {
+const CreateNewGame = ({ session, setSession, onLogout }) => {
   const [modal, showModal] = useState(false);
   const [gameKey, setGameKey] = useState(nanoid(6));
   const token = localStorage.getItem('auth-token');
@@ -33,6 +33,9 @@ const CreateNewGame = ({ session, setSession }) => {
       <Menu.Item key={1} onClick={() => showModal(true)}>
         Create A New Game
       </Menu.Item>
+      <Menu.Item style={{ float: 'right' }} key={3} onClick={onLogout}>
+        Logout
+      </Menu.Item>
       <Menu.Item style={{ float: 'right' }} key={2}>
         key: {(session && session.id) || 'N/A'}
       </Menu.Item>
@@ -43,7 +46,7 @@ const CreateNewGame = ({ session, setSession }) => {
   );
 };
 
-const AdminPage = ({ user }) => {
+const AdminPage = ({ user, setUser }) => {
   const token = localStorage.getItem('auth-token');
   const history = useHistory();
   const [session, setSession] = useState(null);
@@ -51,8 +54,9 @@ const AdminPage = ({ user }) => {
   const [allUsers, setAllUsers] = useState([]);
 
   if (user && !user.isAdmin) {
-    history.push('/login');
+    history.push('/');
     message.error('Access Denied');
+    setUser(null);
   }
 
   useEffect(() => {
@@ -86,7 +90,15 @@ const AdminPage = ({ user }) => {
     <Layout style={{ height: '100vh' }}>
       <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
         <div className="logo" />
-        <CreateNewGame setSession={setSession} session={session} />
+        <CreateNewGame
+          setSession={setSession}
+          session={session}
+          onLogout={() => {
+            history.push('/');
+            localStorage.setItem('auth-token', '');
+            setUser(null);
+          }}
+        />
       </Header>
       <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
         <div className="site-layout-background" style={{ padding: 24, minHeight: 380 }}>
