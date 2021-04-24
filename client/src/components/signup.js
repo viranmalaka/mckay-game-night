@@ -22,14 +22,14 @@ const onFinished = async (values) => {
 
 const Signup = () => {
   return (
-    <PublicLayout>
+    <PublicLayout title="Create Account">
       <Form {...layout} name="basic" initialValues={{ remember: true }} onFinish={onFinished} layout="vertical">
         <Form.Item
           label="Username"
           name="username"
           rules={[{ required: true, message: 'Please input your username!' }]}
         >
-          <Input />
+          <Input placeholder="enter a username" />
         </Form.Item>
 
         <Form.Item
@@ -37,7 +37,7 @@ const Signup = () => {
           name="password"
           rules={[{ required: true, message: 'Please input your password!' }]}
         >
-          <Input.Password />
+          <Input.Password placeholder="enter a password" />
         </Form.Item>
 
         <Form.Item {...tailLayout}>

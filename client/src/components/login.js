@@ -31,7 +31,7 @@ const Login = ({ setUser }) => {
   const history = useHistory();
 
   return (
-    <PublicLayout>
+    <PublicLayout title="Welcome">
       <Form
         {...layout}
         name="basic"
@@ -44,7 +44,7 @@ const Login = ({ setUser }) => {
           name="username"
           rules={[{ required: true, message: 'Please input your username!' }]}
         >
-          <Input />
+          <Input placeholder="enter the username" />
         </Form.Item>
 
         <Form.Item
@@ -52,7 +52,7 @@ const Login = ({ setUser }) => {
           name="password"
           rules={[{ required: true, message: 'Please input your password!' }]}
         >
-          <Input.Password />
+          <Input.Password placeholder="enter the password" />
         </Form.Item>
 
         <Form.Item {...tailLayout}>
