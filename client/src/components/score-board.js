@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Col, InputNumber, Row, Tag } from 'antd';
+import { Button, Col, InputNumber, Row, Tag, Badge } from 'antd';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { get } from '../common/utils';
 
-const ScoreLine = ({ username, totalPoint, userId, setTotalPoint, setNumber }) => {
+const ScoreLine = ({ username, totalPoint, userId, setTotalPoint, setNumber, isOnline }) => {
   const [changeNumber, setChangeNumber] = useState(0);
 
   useEffect(() => {
@@ -13,6 +13,7 @@ const ScoreLine = ({ username, totalPoint, userId, setTotalPoint, setNumber }) =
   return (
     <Row>
       <Col span={8} style={{ display: 'flex', alignItems: 'center', textAlign: 'right' }}>
+        <Badge status={isOnline ? 'success' : 'warning'}></Badge>
         {username}
       </Col>
       <Col span={16} style={{ display: 'flex', alignItems: 'center' }}>
@@ -62,12 +63,13 @@ const ScoreBoard = ({ onlineUsers, session, setSession, allUsers, onScoreUpdate 
         </Button>
       </Col>
       {allUsers
-        .filter((ud) => !ud.isAdmin && !!onlineUsersObject[ud.username])
+        .filter((ud) => !ud.isAdmin)
         .map((ud) => (
           <ScoreLine
             setNumber={flushValue}
             userId={ud._id}
             username={ud.username}
+            isOnline={onlineUsersObject[ud.username]}
             totalPoint={get(session, ['points', ud._id])}
             setTotalPoint={(value, userId) => {
               setSession({ ...session, points: { ...session.points, [userId]: value } });
