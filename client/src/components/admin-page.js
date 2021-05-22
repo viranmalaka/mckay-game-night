@@ -84,6 +84,13 @@ const AdminPage = ({ user, setUser }) => {
     })();
   }, []);
 
+  useEffect(() => {
+    const ml = document.getElementById('message-list');
+    if (ml) {
+      ml.scrollTop = ml.scrollHeight;
+    }
+  }, [session]);
+
   const [adminMessage, setAdminMessage] = useState('');
 
   return (
@@ -107,9 +114,12 @@ const AdminPage = ({ user, setUser }) => {
               <Col span={20} offset={2}>
                 <Row>
                   <Col span={17}>
-                    <div style={{ minHeight: 500, maxHeight: '70vh', overflow: 'auto' }}>
+                    <div style={{ minHeight: 500, maxHeight: '70vh', overflow: 'auto' }} id="message-list">
                       {session.messages.map(({ username, isAdmin, message, time }) => (
-                        <div key={time}>
+                        <div
+                          key={time}
+                          style={{ border: '1px solid #dddddd', margin: 5, padding: 5, background: 'rgb(237 237 237)' }}
+                        >
                           <Tag color="default">{isAdmin ? 'Admin' : username}</Tag>: ({moment(time).format('HH:mm:ss')}){' '}
                           {message}
                         </div>

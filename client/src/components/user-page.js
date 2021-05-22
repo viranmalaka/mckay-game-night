@@ -36,6 +36,13 @@ const UserPage = ({ user, setUser }) => {
     }
   }, [session]);
 
+  useEffect(() => {
+    const ml = document.getElementById('message-list');
+    if (ml) {
+      ml.scrollTop = ml.scrollHeight;
+    }
+  }, [session]);
+
   if (!user) {
     return <Spin />;
   }
@@ -78,11 +85,11 @@ const UserPage = ({ user, setUser }) => {
       </Row>
       <Row style={{ marginTop: 20 }}>
         <Col span={12} offset={6}>
-          <div style={{ minHeight: 200, maxHeight: '70vh', overflow: 'auto' }}>
+          <div style={{ minHeight: 200, maxHeight: '70vh', overflow: 'auto' }} id="message-list">
             {session.messages
               .filter(({ username, isAdmin }) => isAdmin || username === user.username)
               .map(({ username, isAdmin, message, time }) => (
-                <div key={time}>
+                <div key={time} style={{ border: '1px solid #dddddd', margin: 3, padding: 5, background: '#f6f6f6' }}>
                   <Tag color="default">{isAdmin ? 'Admin' : username}</Tag>: ({moment(time).format('HH:mm:ss')}){' '}
                   {message}
                 </div>
