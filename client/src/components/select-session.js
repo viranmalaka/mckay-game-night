@@ -21,7 +21,7 @@ const SelectSession = ({ setSession }) => {
   return (
     <>
       <Modal
-        title="Create A New Game"
+        title="Select a Session"
         visible={modal}
         onOk={() => showModal(true)}
         onCancel={() => showModal(true)}
