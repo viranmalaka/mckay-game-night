@@ -7,8 +7,10 @@ module.exports = {
 
   authMiddleware: (req, res, next) => {
     const token = req.get('token');
+    console.log(token);
     if (token) {
       jwt.verify(token, process.env.JWT_SECREAT, (err, decode) => {
+        console.log(err, decode);
         if (err) {
           req.user = null;
           req.isLoggedIn = false;
