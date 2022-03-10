@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Col, Input, Layout, Menu, message, Modal, Row, Tag } from 'antd';
+import { Button, Col, Input, InputNumber, Layout, Menu, message, Modal, Popover, Radio, Row, Tag, Tooltip } from 'antd';
 import { nanoid } from 'nanoid';
 import ScoreBoard from './score-board';
 import API from '../common/api';
 import SelectSession from './select-session';
 import SocketClient from '../common/socket-client';
 import moment from 'moment';
+import AdminPageUserArea from './admin-page-user-area';
+import { get } from '../common/utils';
 
 const { Header, Content, Footer } = Layout;
 
@@ -50,8 +52,12 @@ const AdminPage = ({ user, setUser }) => {
   const token = localStorage.getItem('auth-token');
   const history = useHistory();
   const [session, setSession] = useState(null);
+  const [selectedImage, selectImage] = useState('none');
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
+
+  const [globalNumber, setGlobalNumber] = useState(0);
+  const [triggerGlobalNumber, setTriggerGlobalNumber] = useState(false);
 
   if (user && !user.isAdmin) {
     history.push('/');
@@ -93,6 +99,37 @@ const AdminPage = ({ user, setUser }) => {
 
   const [adminMessage, setAdminMessage] = useState('');
 
+  const sessionMessages = {};
+  const adminMessages = [];
+  if (session) {
+    session.messages.forEach((a) => {
+      const data = {
+        message: a.message,
+        time: a.time,
+      };
+      if (a.isAdmin) {
+        adminMessages.push(data);
+      } else {
+        const prev = sessionMessages[a.isAdmin ? 'admin' : a.username];
+        if (prev) {
+          prev.push(data);
+        } else {
+          sessionMessages[a.isAdmin ? 'admin' : a.username] = [data];
+        }
+      }
+    });
+  }
+
+  const online = onlineUsers.reduce((p, c) => {
+    p[c.username] = true;
+    return p;
+  }, {});
+
+  const userObj = allUsers.reduce((p, c) => {
+    p[c.username] = c;
+    return p;
+  }, {});
+
   return (
     <Layout style={{ height: '100vh' }}>
       <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
@@ -110,30 +147,83 @@ const AdminPage = ({ user, setUser }) => {
       <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
         <div className="site-layout-background" style={{ padding: 24, minHeight: 380 }}>
           {session && (
-            <Row>
-              <Col span={20} offset={2}>
-                <Row>
-                  <Col span={17}>
-                    <div style={{ minHeight: 500, maxHeight: '70vh', overflow: 'auto' }} id="message-list">
-                      {session.messages.map(({ username, isAdmin, message, time }) => (
-                        <div
-                          key={time}
-                          style={{ border: '1px solid #dddddd', margin: 5, padding: 5, background: 'rgb(237 237 237)' }}
+            <div>
+              <Row>
+                {Object.keys(sessionMessages).map((k) => (
+                  <AdminPageUserArea
+                    total={get(session, ['points', get(userObj, [k, '_id'])])}
+                    userId={get(userObj, [k, '_id'])}
+                    name={k}
+                    key={k}
+                    isOnline={online[k]}
+                    messages={sessionMessages[k]}
+                    session={session}
+                    setSession={setSession}
+                    triggerGlobalNumber={triggerGlobalNumber}
+                    globalNumber={globalNumber}
+                  />
+                ))}
+              </Row>
+              <Row>
+                <Col span={6}>
+                  <InputNumber value={globalNumber} onChange={setGlobalNumber} />
+                  <Button
+                    onClick={() => {
+                      setTriggerGlobalNumber(!setTriggerGlobalNumber());
+                    }}
+                  >
+                    SET
+                  </Button>
+                </Col>
+                <Col span={18} align="end">
+                  <Radio.Group
+                    onChange={(e) => {
+                      selectImage(e.target.value);
+                    }}
+                    value={selectedImage}
+                  >
+                    <Radio value="none">None</Radio>
+                    {Array(10)
+                      .fill({})
+                      .map((_, index) => (
+                        <Popover
+                          destroyTooltipOnHide
+                          key={index}
+                          content={() => <img width={300} src={`/questions/image-${index + 1}.jpeg?t=${Date.now()}`} />}
                         >
-                          <Tag color="default">{isAdmin ? 'Admin' : username}</Tag>: ({moment(time).format('HH:mm:ss')}){' '}
-                          {message}
-                        </div>
+                          <Radio value={index + 1}>{index + 1}</Radio>
+                        </Popover>
                       ))}
-                    </div>
-                    <Row style={{ marginTop: 20 }}>
-                      <Col span={20}>
-                        <Input value={adminMessage} onChange={(e) => setAdminMessage(e.target.value)} />
-                      </Col>
-                      <Col span={4}>
+                  </Radio.Group>
+                  <Button
+                    onClick={() => {
+                      ws.sendMessage(user, session.id, `code-image-${selectedImage}`);
+                    }}
+                  >
+                    SEND IMAGE
+                  </Button>
+                </Col>
+              </Row>
+              <Col span={24} justify="space-between">
+                <Row style={{ marginTop: 20 }}>
+                  <Col span={20} style={{ height: 50, overflow: 'auto' }} className="msg-list">
+                    {adminMessages.map((a) => (
+                      <div className="message-box" key={a.time}>
+                        ({moment(a.time).format('HH:mm:ss')}){' '}
+                        {a.message.startsWith('code-image') ? '[IMAGE]' : a.message}
+                      </div>
+                    ))}
+                  </Col>
+                  <Col span={20}>
+                    <Input value={adminMessage} onChange={(e) => setAdminMessage(e.target.value)} />
+                  </Col>
+                  <Col span={4}>
+                    <Row>
+                      <Col span={12}>
                         <Button
                           style={{ marginLeft: 5 }}
-                          type="primary"
                           block
+                          type="primary"
                           disabled={adminMessage === ''}
                           onClick={() => {
                             ws.sendMessage(user, session.id, adminMessage);
@@ -143,22 +233,22 @@ const AdminPage = ({ user, setUser }) => {
                           SEND
                         </Button>
                       </Col>
+                      <Col span={12}>
+                        <Button
+                          style={{ marginLeft: 5 }}
+                          block
+                          onClick={() => {
+                            ws.updatePoints(session.id, session.points);
+                          }}
+                        >
+                          UPDATE
+                        </Button>
+                      </Col>
                     </Row>
-                  </Col>
-                  <Col span={6} offset={1}>
-                    <ScoreBoard
-                      onlineUsers={onlineUsers}
-                      session={session}
-                      setSession={setSession}
-                      allUsers={allUsers}
-                      onScoreUpdate={() => {
-                        ws.updatePoints(session.id, session.points);
-                      }}
-                    />
                   </Col>
                 </Row>
               </Col>
-            </Row>
+            </div>
           )}
         </div>
       </Content>

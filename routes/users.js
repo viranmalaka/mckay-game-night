@@ -59,7 +59,6 @@ router.post('/login', async (req, res, next) => {
 });
 
 router.get('/validate', authMiddleware, async (req, res, next) => {
-  console.log(req.isLoggedIn, req.user);
   if (req.isLoggedIn) {
     return successResponse(res, { success: true, user: req.user });
   } else {

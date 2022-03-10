@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Col, Input, Row, Spin, Tag } from 'antd';
+import { Button, Col, Image, Input, Row, Spin, Tag } from 'antd';
 import SocketClient from '../common/socket-client';
 import ChooseSession from './choose-session';
 import moment from 'moment';
 import { get } from '../common/utils';
 
 let ws = null;
+
+const getURL = (m, t) => `/questions/image-${m.substring(11)}.jpeg?t=${t}`;
 
 const UserPage = ({ user, setUser }) => {
   const [totalPoints, setTotalpoints] = useState(0);
@@ -91,7 +93,7 @@ const UserPage = ({ user, setUser }) => {
               .map(({ username, isAdmin, message, time }) => (
                 <div key={time} style={{ border: '1px solid #dddddd', margin: 3, padding: 5, background: '#f6f6f6' }}>
                   <Tag color="default">{isAdmin ? 'Admin' : username}</Tag>: ({moment(time).format('HH:mm:ss')}){' '}
-                  {message}
+                  {message.startsWith('code-image') ? <Image width={300} src={getURL(message, time)} /> : message}
                 </div>
               ))}
           </div>
