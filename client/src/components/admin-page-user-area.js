@@ -14,7 +14,7 @@ const AdminPageUserArea = ({
   globalNumber,
   triggerGlobalNumber,
 }) => {
-  const [selected, setSelected] = useState('1');
+  const [selected, setSelected] = useState({ a: false, b: false, c: false });
 
   const [changeNumber, setChangeNumber] = useState(0);
 
@@ -66,13 +66,13 @@ const AdminPageUserArea = ({
           ))}
         </div>
         <div className="d-flex f-col btns">
-          <div className={selected === '1' ? 'selected' : ''} onClick={() => setSelected('1')}>
+          <div className={selected.a ? 'selected' : ''} onClick={() => setSelected({ ...selected, a: !selected.a })}>
             2X
           </div>
-          <div className={selected === '2' ? 'selected' : ''} onClick={() => setSelected('2')}>
+          <div className={selected.b ? 'selected' : ''} onClick={() => setSelected({ ...selected, b: !selected.b })}>
             SWAP
           </div>
-          <div className={selected === '3' ? 'selected' : ''} onClick={() => setSelected('3')}>
+          <div className={selected.c ? 'selected' : ''} onClick={() => setSelected({ ...selected, c: !selected.c })}>
             DECOY
           </div>
         </div>

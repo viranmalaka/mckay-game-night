@@ -90,9 +90,8 @@ const UserPage = ({ user, setUser }) => {
           <div style={{ minHeight: 200, maxHeight: '70vh', overflow: 'auto' }} id="message-list">
             {session.messages
               .filter(({ username, isAdmin }) => isAdmin || username === user.username)
-              .map(({ username, isAdmin, message, time }) => (
+              .map(({ message, time }) => (
                 <div key={time} style={{ border: '1px solid #dddddd', margin: 3, padding: 5, background: '#f6f6f6' }}>
-                  <Tag color="default">{isAdmin ? 'Admin' : username}</Tag>: ({moment(time).format('HH:mm:ss')}){' '}
                   {message.startsWith('code-image') ? <Image width={300} src={getURL(message, time)} /> : message}
                 </div>
               ))}
