@@ -17,8 +17,8 @@ class SocketClient {
     if (this.socket) {
       return false;
     }
-    this.socket = new WebSocket('ws://' + window.location.host);
-    // this.socket = new WebSocket('ws://localhost:4000');
+    // this.socket = new WebSocket('ws://' + window.location.host);
+    this.socket = new WebSocket('ws://localhost:4000');
 
     // Connection opened
     this.socket.addEventListener('open', (event) => {

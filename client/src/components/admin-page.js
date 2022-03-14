@@ -92,6 +92,13 @@ const AdminPage = ({ user, setUser }) => {
 
   useEffect(() => {
     const ml = document.getElementById('message-list');
+    const mls = document.getElementsByClassName('msg-list-to-scroll');
+
+    for (let i = 0; i < mls.length; i++) {
+      const m = mls[i];
+      m.scrollTop = m.scrollHeight;
+    }
+
     if (ml) {
       ml.scrollTop = ml.scrollHeight;
     }
@@ -169,7 +176,7 @@ const AdminPage = ({ user, setUser }) => {
                   <InputNumber value={globalNumber} onChange={setGlobalNumber} />
                   <Button
                     onClick={() => {
-                      setTriggerGlobalNumber(!setTriggerGlobalNumber());
+                      setTriggerGlobalNumber(!triggerGlobalNumber);
                     }}
                   >
                     SET
@@ -206,7 +213,7 @@ const AdminPage = ({ user, setUser }) => {
               </Row>
               <Col span={24} justify="space-between">
                 <Row style={{ marginTop: 20 }}>
-                  <Col span={20} style={{ height: 50, overflow: 'auto' }} className="msg-list">
+                  <Col span={20} style={{ height: 50, overflow: 'auto' }} className="msg-list msg-list-to-scroll">
                     {adminMessages.map((a) => (
                       <div className="message-box" key={a.time}>
                         ({moment(a.time).format('HH:mm:ss')}){' '}

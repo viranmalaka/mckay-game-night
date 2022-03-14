@@ -58,9 +58,9 @@ const AdminPageUserArea = ({
           </div>
         </div>
         <div className="total">{total}</div>
-        <div className="message">
+        <div className="message msg-list-to-scroll">
           {messages.map(({ message, time }) => (
-            <div className="message-box msg-list" key={time}>
+            <div className="message-box" key={time}>
               ({moment(time).format('HH:mm:ss')}) {message}
             </div>
           ))}
