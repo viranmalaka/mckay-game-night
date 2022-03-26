@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Col, Input, InputNumber, Layout, Menu, message, Modal, Popover, Radio, Row, Tag, Tooltip } from 'antd';
+import { Button, Col, Input, InputNumber, Layout, Menu, message, Modal, Popover, Radio, Row } from 'antd';
 import { nanoid } from 'nanoid';
-import ScoreBoard from './score-board';
 import API from '../common/api';
 import SelectSession from './select-session';
 import SocketClient from '../common/socket-client';
@@ -156,20 +155,23 @@ const AdminPage = ({ user, setUser }) => {
           {session && (
             <div>
               <Row>
-                {Object.keys(sessionMessages).map((k) => (
-                  <AdminPageUserArea
-                    total={get(session, ['points', get(userObj, [k, '_id'])])}
-                    userId={get(userObj, [k, '_id'])}
-                    name={k}
-                    key={k}
-                    isOnline={online[k]}
-                    messages={sessionMessages[k]}
-                    session={session}
-                    setSession={setSession}
-                    triggerGlobalNumber={triggerGlobalNumber}
-                    globalNumber={globalNumber}
-                  />
-                ))}
+                {allUsers &&
+                  allUsers
+                    .filter(({ isAdmin }) => !isAdmin)
+                    .map(({ username: k, _id }) => (
+                      <AdminPageUserArea
+                        total={get(session, ['points', _id, 'value'])}
+                        userId={get(userObj, [k, '_id'])}
+                        name={k}
+                        key={k}
+                        isOnline={online[k]}
+                        messages={sessionMessages[k] || []}
+                        session={session}
+                        setSession={setSession}
+                        triggerGlobalNumber={triggerGlobalNumber}
+                        globalNumber={globalNumber}
+                      />
+                    ))}
               </Row>
               <Row>
                 <Col span={6}>
@@ -245,7 +247,9 @@ const AdminPage = ({ user, setUser }) => {
                           style={{ marginLeft: 5 }}
                           block
                           onClick={() => {
+                            setTriggerGlobalNumber(!triggerGlobalNumber);
                             ws.updatePoints(session.id, session.points);
+                            setSession({ ...session, messages: [] });
                           }}
                         >
                           UPDATE

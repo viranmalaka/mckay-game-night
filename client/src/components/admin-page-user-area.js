@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Badge, Button, Col, InputNumber, Tag } from 'antd';
+import { Badge, Button, Col, InputNumber } from 'antd';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { get } from '../common/utils';
 
 const AdminPageUserArea = ({
   isOnline,
@@ -17,6 +18,7 @@ const AdminPageUserArea = ({
   const [selected, setSelected] = useState({ a: false, b: false, c: false });
 
   const [changeNumber, setChangeNumber] = useState(0);
+  const [inputColor, setInputColor] = useState('white');
 
   // useEffect(() => {
   //   setChangeNumber(setNumber);
@@ -24,11 +26,20 @@ const AdminPageUserArea = ({
   //
   useEffect(() => {
     setChangeNumber(globalNumber);
+    setInputColor('white');
   }, [triggerGlobalNumber]);
 
   const setTotalPoint = (value, userId) => {
-    setSession({ ...session, points: { ...session.points, [userId]: value } });
+    setSession({ ...session, points: { ...session.points, [userId]: { value, selected, name } } });
   };
+
+  useEffect(() => {
+    setSession({
+      ...session,
+      points: { ...session.points, [userId]: { ...get(session, ['points', userId]), selected } },
+    });
+  }, [selected]);
+
   return (
     <Col span={12}>
       <div className="user-area d-flex">
@@ -48,16 +59,24 @@ const AdminPageUserArea = ({
             <Button
               icon={<PlusCircleOutlined />}
               size="small"
-              onClick={() => setTotalPoint((total || 0) + changeNumber, userId)}
+              onClick={() => {
+                setTotalPoint((total || 0) + changeNumber, userId);
+                setInputColor('#00d000');
+              }}
             />
             <Button
               icon={<MinusCircleOutlined />}
               size="small"
-              onClick={() => setTotalPoint((total || 0) - changeNumber, userId)}
+              onClick={() => {
+                setTotalPoint((total || 0) - changeNumber, userId);
+                setInputColor('#fd7777');
+              }}
             />
           </div>
         </div>
-        <div className="total">{total}</div>
+        <div className="total" style={{ background: inputColor }}>
+          {total}
+        </div>
         <div className="message msg-list-to-scroll">
           {messages.map(({ message, time }) => (
             <div className="message-box" key={time}>

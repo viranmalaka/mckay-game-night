@@ -37,7 +37,7 @@
 }
 .message {
   flex: 1;
-  background-color: #8eff8e;
+  background-color: #c2ffc2;
   height: 60px;
   overflow: auto;
 }
@@ -53,6 +53,7 @@
   border: 1px solid #cecece;
   margin: 1px;
   cursor: pointer;
+  height: 16px;
 }
 
 .selected {

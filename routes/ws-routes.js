@@ -48,7 +48,7 @@ module.exports = (wss) => {
             });
             // save in the db
             const { sessionId, ...rest } = payload;
-            Session.findOneAndUpdate({ id: sessionId }, { $push: { messages: rest } }, { new: true }).then(() => {});
+            // Session.findOneAndUpdate({ id: sessionId }, { $push: { messages: rest } }, { new: true }).then(() => {});
             break;
 
           case 'update_points':

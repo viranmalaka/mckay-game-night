@@ -26,16 +26,17 @@ const UserPage = ({ user, setUser }) => {
         setSession({ ...session, messages: [...session.messages, data] });
       });
       ws.addHook('changed_points', (data) => {
-        setSession({ ...session, points: data });
-        setTotalpoints(data[user._id]);
+        setSession({ ...session, points: data, messages: [] });
+        setTotalpoints(get(data, [user._id, 'value']));
       });
     }
   }, [user, session]);
 
   useEffect(() => {
     if (session) {
-      setTotalpoints(get(session, ['points', user._id]));
+      setTotalpoints(get(session, ['points', user._id, 'value']));
     }
+    console.log(session);
   }, [session]);
 
   useEffect(() => {
@@ -86,7 +87,7 @@ const UserPage = ({ user, setUser }) => {
         </Col>
       </Row>
       <Row style={{ marginTop: 20 }}>
-        <Col span={12} offset={6}>
+        <Col span={9} offset={6}>
           <div style={{ minHeight: 200, maxHeight: '70vh', overflow: 'auto' }} id="message-list">
             {session.messages
               .filter(({ username, isAdmin }) => isAdmin || username === user.username)
@@ -96,6 +97,22 @@ const UserPage = ({ user, setUser }) => {
                 </div>
               ))}
           </div>
+        </Col>
+        <Col span={5} offset={1}>
+          {Object.values(session.points)
+            .filter(({ value }) => !!value)
+            .sort((a, b) => b.value - a.value)
+            .map(({ name, selected, value }) => (
+              <div className="d-flex jc-space-between">
+                <div style={{ fontWeight: 'bold' }}>{name} :</div>
+                <div>{value}</div>
+                <div className="d-flex btns">
+                  <div className={selected.a && 'selected'}>2X</div>
+                  <div className={selected.b && 'selected'}>SWAP</div>
+                  <div className={selected.c && 'selected'}>DECOY</div>
+                </div>
+              </div>
+            ))}
         </Col>
       </Row>
       <Row style={{ marginTop: 20 }}>
