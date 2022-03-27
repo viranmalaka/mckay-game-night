@@ -99,19 +99,21 @@ const UserPage = ({ user, setUser }) => {
           </div>
         </Col>
         <Col span={5} offset={1}>
-          {Object.values(session.points)
+          {Object.values(session.points || {})
             .filter(({ value }) => !!value)
             .sort((a, b) => b.value - a.value)
             .map(({ name, selected, value }) => (
-              <div className="d-flex jc-space-between">
-                <div style={{ fontWeight: 'bold' }}>{name} :</div>
-                <div>{value}</div>
-                <div className="d-flex btns">
+              <Row>
+                <Col span={8} style={{ fontWeight: 'bold' }}>
+                  {name} :
+                </Col>
+                <Col span={4}>{value}</Col>
+                <Col span={12} className="btns d-flex ai-center">
                   <div className={selected.a && 'selected'}>2X</div>
                   <div className={selected.b && 'selected'}>SWAP</div>
                   <div className={selected.c && 'selected'}>DECOY</div>
-                </div>
-              </div>
+                </Col>
+              </Row>
             ))}
         </Col>
       </Row>
